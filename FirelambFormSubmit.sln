@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "FirelambFormSubmit", "http://localhost:27623", "{1D2A558C-4C44-44E0-8899-E4A40CBEB1F8}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_27623"
+		Debug.AspNetCompiler.PhysicalPath = "D:\编程相关\即兴作品\Jquery插件(自己开发)\FirelambFormSubmit\FirelambFormSubmit\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_27623\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_27623"
+		Release.AspNetCompiler.PhysicalPath = "D:\编程相关\即兴作品\Jquery插件(自己开发)\FirelambFormSubmit\FirelambFormSubmit\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_27623\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "D:\编程相关\即兴作品\Jquery插件(自己开发)\FirelambFormSubmit\FirelambFormSubmit\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D2A558C-4C44-44E0-8899-E4A40CBEB1F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D2A558C-4C44-44E0-8899-E4A40CBEB1F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
