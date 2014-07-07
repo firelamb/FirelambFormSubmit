@@ -1,7 +1,7 @@
 ﻿/**
 jQuery Form Submit
-@Verson 1.0.0
-@UpdateDate 2014-04-19
+@Verson 1.0.1
+@UpdateDate 2014-07-04
 @Url 
 @Author Firelamb
 @Email firelamb@qq.com
@@ -11,7 +11,7 @@ jQuery Form Submit
         formId: "",//form id
         isEncrypt: false,//是否加密form表单的数据
         encryptObjs: [],//需要加密的form的控件，如#input1,#input2 格式是数组格式,isEncrypt为true时，请记得设置此属性
-        encryptType: "MD5",//加密类型 isEncrypt为true时，请记得设置此属性.可设置的属性：MD5，SHA1，SHA256，SHA3，
+        //encryptType: "MD5",//加密类型 isEncrypt为true时，请记得设置此属性.可设置的属性：MD5，SHA1，SHA256，SHA3，
         //AES,DES,Rabbit,RC4
 
         submitType: "dirPost",//事件类型 dirPost,ajaxPost
@@ -33,11 +33,12 @@ jQuery Form Submit
 
             // event.preventDefault();
             var r = opts.beforePost;
-            if (r != undefined && r != null && r.toString() != "undefined") {
+
+            if (r != undefined && r != null && r.toString() != "undefined" && r != "" && r) {
 
                 if (opts.isEncrypt) {
 
-                    Encrypt(opts.formId, opts.encryptType, opts.encryptObjs);
+                    Encrypt(opts.formId, opts.encryptObjs);
 
                     FirelambSubmit(opts.submitType, opts.formId, opts.postUrl, opts.ajaxTips, opts.callEvent());
 
@@ -56,7 +57,7 @@ jQuery Form Submit
             //the lib folder must in the FirelambFormSubmit folder
             $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/core-min.js",
 	            function () {
-	                loadEncrypt(opts.encryptType, pluginPaths);
+	                loadEncrypt(pluginPaths);
 	                $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/yepnope/yepnope.js", function () {
 	                    yepnope({
 	                        load: [pluginPaths[0] + "FirelambFormSubmit/" + "lib/jquery-loadmask-0.4/jquery.loadmask.css",
@@ -73,34 +74,41 @@ jQuery Form Submit
 })(jQuery);
 
 //#region 加载对应的加密类型js函数
-function loadEncrypt(encryptpe, pluginPaths) {
-    switch (encryptpe) {
-
-        case "MD5":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/md5.js");
-            break;
-        case "SHA1":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/sha1.js");
-            break;
-        case "SHA256":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/SHA256.js");
-            break;
-        case "SHA3":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/SHA3.js");
-            break;
-        case "AES":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/AES.js");
-            break;
-        case "DES":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/tripledes.js");
-            break;
-        case "Rabbit":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/Rabbit.js");
-            break;
-        case "RC4":
-            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/RC4.js");
-            break;
-    }
+function loadEncrypt(pluginPaths) {
+    $.getScript(pluginPaths[0] + "EnDecrypt/EnDeCrypt.min.js");
+    //switch (encryptpe) {
+    //    case "BASE64":
+    //        $.getScript(pluginPaths[0] + "EnDecrypt/EnDeCrypt.min.js");
+    //        break;
+    //    case "MD5":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/md5.js");
+    //        break;
+    //    case "SHA1":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/sha1.js");
+    //        break;
+    //    case "SHA256":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/SHA256.js");
+    //        break;
+    //    case "SHA3":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/SHA3.js");
+    //        break;
+    //    case "AES":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/AES.js",function() {
+    //            $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/mode-cfb-min.js",function() {
+    //                $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/components/pad-zeropadding-min.js");
+    //            });
+    //        });
+    //        break;
+    //    case "DES":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/tripledes.js");
+    //        break;
+    //    case "Rabbit":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/Rabbit.js");
+    //        break;
+    //    case "RC4":
+    //        $.getScript(pluginPaths[0] + "FirelambFormSubmit/" + "lib/CryptoJS/rollups/RC4.js");
+    //        break;
+    //}
 }
 
 //#endregion
@@ -151,59 +159,81 @@ function FirelambSubmit(submitType, formid, posturl, ajaxTips, callEvent) {
 //#endregion
 
 //#region 加密
-function Encrypt(formid, encryptType, encryptObjs) {
+function Encrypt(formid, encryptObjs) {
+    for (var i = 0; i < encryptObjs.length; i++) {
+        var v = $(encryptObjs[i]).val();
+        var s = Base64.encode64(v);
+        $(encryptObjs[i]).val(s);
 
-    switch (encryptType) {
-        case "MD5":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.MD5(v));
-
-            }
-            break;
-        case "SHA1":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.SHA1("" + v + "").toString());
-            }
-            break;
-        case "SHA256":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.SHA256(v));
-            }
-            break;
-        case "SHA3":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.SHA3(v));
-            }
-            break;
-        case "AES":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.AES.encrypt("" + v + "", "FirelambFormSubmit"));
-            }
-            break;
-        case "DES":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.DES.encrypt(v, "FirelambFormSubmit"));
-            }
-            break;
-        case "Rabbit":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.Rabbit.encrypt(v, "FirelambFormSubmit"));
-            }
-            break;
-        case "RC4":
-            for (var i = 0; i < encryptObjs.length; i++) {
-                var v = $(encryptObjs[i]).val();
-                $(encryptObjs[i]).val(CryptoJS.RC4.encrypt(v, "FirelambFormSubmit"));
-            }
-            break;
     }
+    //switch (encryptType) {
+    //    case "BASE64":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            var s = Base64.encode64(v);
+    //            $(encryptObjs[i]).val(s);
+
+    //        }
+    //        break;
+    //    case "MD5":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.MD5(v));
+
+    //        }
+    //        break;
+    //    case "SHA1":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.SHA1("" + v + "").toString());
+    //        }
+    //        break;
+    //    case "SHA256":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.SHA256(v));
+    //        }
+    //        break;
+    //    case "SHA3":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.SHA3(v));
+    //        }
+    //        break;
+    //    case "AES":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+
+    //            var key = CryptoJS.enc.Utf8.parse('FirelambFormSubmitEncryptedKeyss');
+    //            var iv = CryptoJS.enc.Utf8.parse('FirelambFormSubmitEncryptedKeyss');
+
+    //            var encrypted = CryptoJS.AES.encrypt(v, key, { iv: iv });
+    //           // var encrypted = CryptoJS.AES.encrypt(v, key,
+    //              //  { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.ZeroPadding });
+
+    //            $(encryptObjs[i]).val(encrypted);
+    //            //$(encryptObjs[i]).val(CryptoJS.AES.encrypt("" + v + "", "FirelambFormSubmit"));
+    //        }
+    //        break;
+    //    case "DES":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.DES.encrypt(v, "FirelambFormSubmit"));
+    //        }
+    //        break;
+    //    case "Rabbit":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.Rabbit.encrypt(v, "FirelambFormSubmit"));
+    //        }
+    //        break;
+    //    case "RC4":
+    //        for (var i = 0; i < encryptObjs.length; i++) {
+    //            var v = $(encryptObjs[i]).val();
+    //            $(encryptObjs[i]).val(CryptoJS.RC4.encrypt(v, "FirelambFormSubmit"));
+    //        }
+    //        break;
+    //}
 
 
 }

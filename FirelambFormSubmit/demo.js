@@ -24,6 +24,20 @@
             $("#ajaxpwd4show").show();
         }
     });
+
+    $("#btnbeforePost").FirelambFormSubmit({
+        formId: "#frmbeforePost"
+        , beforePost: function () {
+            var v = $.trim($("txtbeforePost").val());
+
+            if (v == undefined || v == null || v == "undefined"||v=="")
+            {
+                alert("please input the value");
+                return false;
+            }
+        }
+    });
+
     $("#btncallpost").FirelambFormSubmit({
         formId: "#frmcall"
       , submitType: "ajaxPost"
